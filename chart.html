@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+                .sline{stroke:grey;stroke-width:0.2;}
+                .yline{stroke:grey;stroke-width:0.2;}     
+                .skill{fill:lightgrey; fill-opacity:0.5;}
+                .red{fill:red;}
+                text{font-family:verdana; font-size:.8Em;}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<div id="charts"></div>
+<script>
+ 
+var skills = {
+'Programming Languages':[
+                {title:'C#', experience:[{start:'2.2005', end:'2.2007', level:'0.5'},
+                                {start:'2.2007', end:'', level:'1'}]},
+                {title:'VB.Net', experience:[{start:'0.2002', end:'0.2003', level:'0.25'},
+                                {start:'0.2003', end:'0.2004', level:'0.5'},
+                                {start:'0.2004', end:'2.2005', level:'1'},
+                                {start:'2.2005', end:'2.2007', level:'0.5'},
+                                {start:'2.2012', end:'2.2013', level:'0.5'}]},
+                {title:'JavaScript', experience:[{start:'0.2002', end:'0.2004', level:'0.5'},
+                                {start:'0.2004', end:'0.2007', level:'0.25'},
+                                {start:'0.2007', end:'0.2011', level:'0.5'},
+                                {start:'0.2011', end:'', level:'1'}]},
+                {title:'T-SQL', experience:[{start:'0.2002', end:'0.2004', level:'0.5'},
+                                {start:'0.2004', end:'0.2005', level:'0.25'},
+                                {start:'0.2009', end:'0.2010', level:'0.5'},
+                                {start:'2.2012', end:'2.2013', level:'0.5'}]},
+                {title:'Python', experience:[{start:'2.2007', end:'2.2008', level:'0.25'},
+                                {start:'2.2008', end:'', level:'0.5'}]},
+                {title:'VB 5&6', experience:[{start:'0.2002', end:'0.2004', level:'1'},
+                                {start:'0.2004', end:'0.2005', level:'0.5'},
+                                {start:'0.2005', end:'0.2006', level:'0.25'}]},
+                {title:'VBScript', experience:[{start:'0.2002', end:'0.2004', level:'1'},
+                                {start:'0.2004', end:'0.2005', level:'0.5'},
+                                {start:'0.2005', end:'0.2006', level:'0.25'}]},
+                {title:'XML (X-PATH, XSLT, XSD)', experience:[{start:'0.2002', end:'0.2005', level:'0.5'},
+                                {start:'0.2005', end:'0.2006', level:'0.25'},
+                                {start:'0.2007', end:'0.2010', level:'0.5'},
+                                {start:'0.2010', end:'0.2012', level:'0.25'}]},
+                {title:'ASP', experience:[{start:'0.2002', end:'0.2004', level:'1'},
+                                {start:'0.2004', end:'0.2005', level:'0.5'},
+                                {start:'0.2005', end:'0.2006', level:'0.25'}]}
+                ],
+                'Libraries / Frameworks':[
+                {title:'jQuery', experience:[{start:'0.2009', end:'0.2010', level:'0.25'},
+                                {start:'0.2012', end:'', level:'0.5'}]},
+                {title:'Kockout.js', experience:[{start:'0.2012', end:'', level:'0.5'}]},
+                {title:'D3.js', experience:[{start:'0.2012', end:'', level:'0.5'}]},
+                {title:'ASP.Net', experience:[{start:'0.2002', end:'0.2003', level:'0.25'},
+                                {start:'0.2003', end:'2.2005', level:'1'},
+                                {start:'2.2005', end:'0.2008', level:'0.5'},
+                                {start:'2.2009', end:'2.2011', level:'0.5'}]},
+                {title:'ASP.Net MVC', experience:[{start:'0.2012', end:'2.2013', level:'0.5'}]},
+                {title:'ServiceStack.Net', experience:[{start:'2.2012', end:'', level:'0.5'}]},
+                {title:'Tornado', experience:[{start:'2.2009', end:'2.2011', level:'0.25'}]},
+                {title:'Flask', experience:[{start:'2.2012', end:'', level:'0.25'}]},
+                {title:'Django', experience:[{start:'0.2012', end:'2.2013', level:'0.25'}]},
+                {title:'Pandas', experience:[{start:'0.2013', end:'0.2014', level:'0.25'}]},
+                {title:'Neo4j', experience:[{start:'2.2013', end:'', level:'0.25'}]}
+                ],
+                'Tools / Environments':[
+                {title:'Visual Studio 2005-2012', experience:[{start:'0.2002', end:'0.2005', level:'1'},
+                                {start:'0.2005', end:'0.2007', level:'0.5'},
+                                {start:'0.2007', end:'', level:'1'}]},
+                {title:'TFS', experience:[{start:'0.2007', end:'', level:'1'}]},
+                {title:'CVS', experience:[{start:'0.2003', end:'0.2007', level:'0.5'}]},
+                {title:'TeamBuild', experience:[{start:'0.2007', end:'0.2009', level:'1'},
+                                {start:'0.2009', end:'2.2011', level:'0.5'},
+                                {start:'2.2011', end:'0.2012', level:'1'},
+                                {start:'0.2012', end:'2.2013', level:'0.5'}]},
+                {title:'MSBuild', experience:[{start:'0.2007', end:'0.2009', level:'1'},
+                                {start:'0.2009', end:'2.2011', level:'0.5'},
+                                {start:'2.2011', end:'0.2012', level:'1'},
+                                {start:'0.2012', end:'2.2013', level:'0.5'}]},
+                {title:'Wix', experience:[{start:'0.2011', end:'0.2012', level:'1'},
+                                {start:'0.2012', end:'0.2013', level:'0.25'}]},
+                {title:'Vim', experience:[{start:'2.2010', end:'2.2012', level:'0.25'}]},
+                {title:'Nant / Nunit', experience:[{start:'0.2002', end:'0.2007', level:'0.25'}]},
+                {title:'SublimeText', experience:[{start:'2.2012', end:'', level:'0.5'}]},
+                {title:'Git', experience:[{start:'2.2011', end:'', level:'0.5'}]}
+                ]
+}
+ 
+                d3.select('#charts').selectAll('svg')
+                .data(Object.keys(skills))
+                .enter()
+                .append('svg')  
+                .each(addChart);
+               
+                function addChart(d)
+                {
+                                chart = d3.select(this);
+ 
+                                var height = 400, width = 600,
+                                skillX1 = 50, skillX2 = 400,
+                                skillDist = 20
+                                skillTextBuf = 10, titleTextBuf = 10;
+                               
+                                chart.attr('height', height)
+                                .attr('width', width);
+ 
+                                //line for each skill
+                                chart.selectAll('.sline')
+                                .data(new Array(skills[d].length+1))//+1 to get an enclosing bottom line
+                                .enter().append('line')
+                                .attr('x1', skillX1)
+                                .attr('y1', function(d,i){return (i+1)*skillDist;})
+                                .attr('x2', skillX2)
+                                .attr('y2', function(d,i){return (i+1)*skillDist;})
+                                .attr('class','sline');          
+                                //skill text
+                                chart.selectAll('text')
+                                .data(skills[d])
+                                .enter().append('text')
+                                .attr('x', skillX2 + skillTextBuf)
+                                .attr('y', function(d,i){return ((i+1)*skillDist) + (skillDist-(skillDist/4));})
+                                .text(function(d){return d.title;})
+                                .attr('id', function(s, i){return 'section' + Object.keys(skills).indexOf(d) + 'skill' + i;}); //use indexes to avoid problematic characters
+                                //line for each year                        
+                                var yearCount = new Date().getFullYear() - evalSkillDate(skills[d], 'start', d3.min);
+                                var years = new Array();
+                                var yearDist = (skillX2 - skillX1)/yearCount;
+                                for (var i=yearCount;i>0;i--)
+                                {
+                                                years.push(new Date().getFullYear() - i);
+                                }
+                                chart.selectAll('.yline')
+                                .data(new Array(years.length + 1)).enter().append('line')
+                                .attr('x1', function(d, i){return yearDist * (i) + skillX1;})
+                                .attr('y1', skillDist)
+                                .attr('x2', function(d, i){return yearDist * (i) + skillX1;})
+                                .attr('y2', (skills[d].length+1) * skillDist)
+                                .attr('class', 'yline');
+                                //year text
+                                chart.selectAll('.yearLabels')
+                                .data(years).enter().append('text')
+                                .attr('x',function(d, i){return yearDist * (i) + skillX1 - (skillDist/2);})
+                                .attr('y',function(){return skillDist + ((skills[d].length + 1) * skillDist);})
+                                .text(function(d){return "'" + String(d).slice(2,4);});
+                                //skill blocks
+                                chart.selectAll('.skill')
+                                .data(skills[d].map(function(s){return s.experience;}))
+                                .enter().append('g')
+                                .attr('y', function(d,i){return (i+1) * skillDist;})
+                                .attr('skill', function(s,i){return 'section' + Object.keys(skills).indexOf(d) + 'skill' + i;})
+                                .selectAll('.skill')
+                                .data(function(d,i){return d;})
+                                                .enter().append('rect')
+                                                .attr('x', function(s){return getSkillX(years, s.start, yearDist)+skillX1;})
+                                                .attr('y', function(s){return parseInt(d3.select(this.parentNode).attr('y'))+(skillDist-(skillDist*s.level));})
+                                                .attr('height', function(s){return skillDist * s.level;})
+                                                .attr('width', function(s){return getSkillX(years,s.end, yearDist)-getSkillX(years, s.start, yearDist);})
+                                                .attr('class','skill')
+                                                .on('mouseover',function(s,i){d3.select('#' + d3.select(this.parentNode).attr('skill')).classed('red', true);})
+                                                .on('mouseout',function(s,i){d3.select('#' + d3.select(this.parentNode).attr('skill')).classed('red', false);});
+                                //chart title
+                                chart.append('text')
+                                .attr('x', function(){return (((skillX2+skillTextBuf)-skillX1)/2)-(d.length/2);})//approx mid-point of chart content
+                                .attr('y', titleTextBuf)
+                                .text(d);
+                }
+                function getSkillX(years, period, yearDist)
+                {
+                                var sYear = period;
+                                var sQuart = 0;
+                                if (sYear.indexOf('.') != -1)
+                                {
+                                                sYear = parseInt(period.split('.')[1]);
+                                                sQuart = parseInt(period.split('.')[0]);
+                                }
+                                var x = years.indexOf(sYear) * yearDist;
+                                var offset = (yearDist * (sQuart/4));//(yearDist/3)*(sQuart-1);
+                                if (period==''){return years.length * yearDist;}
+                                return x+offset;
+                               
+                }
+                function evalSkillDate(skills, acc, evl)
+                {
+                                //used to evaluate all dates in a set of skills - handling nested arrays
+                                return skills.map(function(d){
+                                                //access the experience array for each skill
+                                                return d.experience;
+                                })
+                                .map(function(d){
+                                                return d.map(function(s){
+                                                                //for each period of experience get the year
+                                                                var yr = s[acc].trim();
+                                                                if(yr.indexOf('.')!=-1){yr = s[acc].split('.')[1];}
+                                                                if (yr === ''){yr = new Date().getFullYear();}
+                                                                return parseInt(yr);
+                                                                })
+                                                .reduce(function(v1,v2){
+                                                                //evaluate and condense experience years. Results in a nested array to be further reduced
+                                                                return evl([v1,v2]);
+                                                });
+                                })
+                                .reduce(function(v1,v2){
+                                                //evaluate and condense skill years
+                                                return evl([v1,v2]);
+                                })
+                }
+</script>
+</body>
